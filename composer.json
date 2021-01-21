@@ -23,7 +23,7 @@
       }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.3",
         "yiisoft/yii2": "~2.0.13",
         "bower-asset/jquery-querybuilder": "~2.5.0",
         "pascaldevink/shortuuid":"^3.0"
