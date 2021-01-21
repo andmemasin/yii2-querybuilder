@@ -25,8 +25,8 @@
     "require": {
         "php": "^7.1",
         "yiisoft/yii2": "~2.0.13",
-        "bower-asset/jQuery-QueryBuilder": "~2.5.0",
-        "pascaldevink/shortuuid":"~1"
+        "bower-asset/jquery-querybuilder": "~2.5.0",
+        "pascaldevink/shortuuid":"^3.0"
 
     },
     "require-dev": {
@@ -37,7 +37,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.2.x-dev"
+            "dev-master": "1.2.x-dev"
         }
     }
 }
