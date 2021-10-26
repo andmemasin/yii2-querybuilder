@@ -1,7 +1,7 @@
 jQuery QueryBuilder Extension for Yii 2
 =======================================
 
-This is the jQuery QueryBuilder extension for Yii 2. It encapsulates QueryBuilder component in terms of Yii widgets, 
+This is the jQuery QueryBuilder extension for Yii 2. It encapsulates QueryBuilder component in terms of Yii widgets,
 and thus makes using QueryBuilder component in Yii applications extremely easy
 
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
@@ -35,6 +35,21 @@ to the require section of your `composer.json` file.
 How to use
 ----------
 
+The extension depends the bootstrap css then is necessary adds it in `AppAsset`:
+
+```php
+class AppAsset extends AssetBundle {
+
+    ...
+
+    public $depends = [
+        ...
+        'yii\bootstrap\BootstrapAsset', // or 'yii\bootstrap4\BootstrapAsset'
+    ];
+
+}
+```
+
 **View**:
 
 ```php
@@ -45,18 +60,20 @@ use leandrogehlen\querybuilder\QueryBuilderForm;
     'rules' => $rules,
     'builder' => [
         'id' => 'query-builder',
-        'filters' => [
-            ['id' => 'id', 'label' => 'Id', 'type' => 'integer'],
-            ['id' => 'name', 'label' => 'Name', 'type' => 'string'],
-            ['id' => 'lastName', 'label' => 'Last Name', 'type' => 'string']
+        'pluginOptions' => [
+            'filters' => [
+                ['id' => 'id', 'label' => 'Id', 'type' => 'integer'],
+                ['id' => 'name', 'label' => 'Name', 'type' => 'string'],
+                ['id' => 'lastName', 'label' => 'Last Name', 'type' => 'string']
+            ]
         ]
     ]
  ])?>
- 
-      <?= Html::submitButton('Apply'); ?>
-      <?= Html::resetButton('Reset'); ?>
-      
- <?php QueryBuilderForm::end() ?>
+
+    <?= Html::submitButton('Apply'); ?>
+    <?= Html::resetButton('Reset'); ?>
+
+<?php QueryBuilderForm::end() ?>
 ```
 
 **Controller**:
@@ -84,7 +101,6 @@ public function actionIndex()
           'dataProvider' => $dataProvider,
           'rules' => $rules
       ]);
+
 }
 ```
-
-

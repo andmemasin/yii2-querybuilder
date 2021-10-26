@@ -8,7 +8,7 @@ use Yii;
 /**
  * This is the base class for all unit tests.
  */
-class TestCase extends \PHPUnit\Framework\TestCase
+class TestCase extends  \PHPUnit\Framework\TestCase
 {
     /**
      * This method is called before the first test of this test class is run.
@@ -17,7 +17,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     public static function setUpBeforeClass()
     {
-        $vendorDir = __DIR__ . '/../../vendor';
+        $vendorDir = __DIR__ . '/../vendor';
         $vendorAutoload = $vendorDir . '/autoload.php';
         if (file_exists($vendorAutoload)) {
             require_once($vendorAutoload);
