@@ -4,6 +4,7 @@
 namespace leandrogehlen\querybuilder\tests\unit;
 
 use leandrogehlen\querybuilder\Translator;
+use PascalDeVink\ShortUuid\ShortUuid;
 
 class TranslatorTest extends TestCase
 {

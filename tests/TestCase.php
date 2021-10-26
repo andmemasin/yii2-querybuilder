@@ -15,7 +15,7 @@ class TestCase extends  \PHPUnit\Framework\TestCase
      * Attempts to load vendor autoloader.
      * @throws \yii\base\NotSupportedException
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass() : void
     {
         $vendorDir = __DIR__ . '/../vendor';
         $vendorAutoload = $vendorDir . '/autoload.php';
@@ -44,7 +44,7 @@ class TestCase extends  \PHPUnit\Framework\TestCase
     /**
      * Sets up before test
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->mockApplication();
@@ -54,7 +54,7 @@ class TestCase extends  \PHPUnit\Framework\TestCase
      * Clean up after test.
      * The application created with [[mockApplication]] will be destroyed.
      */
-    protected function tearDown()
+    protected function tearDown() : void
     {
         parent::tearDown();
         Yii::$app = null;
