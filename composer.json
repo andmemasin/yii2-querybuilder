@@ -32,7 +32,7 @@
   "require": {
     "yiisoft/yii2": "~2.0.0",
     "solutosoft/yii2-plugin": "~1.0.0",
-    "bower-asset/jquery-querybuilder": "~2.4.0",
+    "bower-asset/jquery-querybuilder": "^2.4.0",
     "pascaldevink/shortuuid": "^3.0"
   },
   "require-dev": {
