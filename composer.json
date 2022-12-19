@@ -47,5 +47,14 @@
     "branch-alias": {
       "dev-master": "2.0.x-dev"
     }
+  },
+  "config": {
+    "platform": {
+      "php": "8.1.2"
+    },
+    "process-timeout": 1800,
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true
+    }
   }
 }
