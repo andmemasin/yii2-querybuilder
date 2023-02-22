@@ -33,7 +33,7 @@
     "yiisoft/yii2": "~2.0.0",
     "solutosoft/yii2-plugin": "~1.0.0",
     "bower-asset/jquery-querybuilder": "^2.4.0",
-    "pascaldevink/shortuuid": "^3.0"
+    "pascaldevink/shortuuid": "^3.0 || ^4.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^8.0 || ^9.0"
