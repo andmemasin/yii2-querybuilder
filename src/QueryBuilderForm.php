@@ -44,10 +44,10 @@ use yii\helpers\Json;
 class QueryBuilderForm extends Widget
 {
     /**
-     * @param array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @var array<mixed>|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
      */
-    public $action = [''];
+    public array|string $action = [''];
 
     /**
      * @var string the form submission method. This should be either 'post' or 'get'. Defaults to 'get'.
@@ -59,7 +59,7 @@ class QueryBuilderForm extends Widget
     public $method = 'get';
 
     /**
-     * @var array the HTML attributes (name-value pairs) for the form tag.
+     * @var array<mixed> the HTML attributes (name-value pairs) for the form tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
@@ -70,7 +70,7 @@ class QueryBuilderForm extends Widget
     public $rulesParam = 'rules';
 
     /**
-     * @var array|QueryBuilder QueryBuilder column configuration.
+     * @var array<mixed>|QueryBuilder QueryBuilder column configuration.
      * For example,
      *
      * ```php
@@ -96,7 +96,7 @@ class QueryBuilderForm extends Widget
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init() : void
     {
         if (is_array($this->builder)) {
             $this->builder = Yii::createObject(array_merge([

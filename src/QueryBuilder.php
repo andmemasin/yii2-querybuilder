@@ -16,12 +16,13 @@ class QueryBuilder extends \soluto\plugin\Widget {
     public $pluginName = 'queryBuilder';
 
     /**
+     * @return string[]
      * @inheritdoc
      */
-    protected function assets()
+    protected function assets() : array
     {
         return [
-            QueryBuilderAsset::className()
+            QueryBuilderAsset::class
         ];
     }
 

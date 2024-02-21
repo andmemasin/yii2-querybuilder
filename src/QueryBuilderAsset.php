@@ -13,14 +13,23 @@ class QueryBuilderAsset extends AssetBundle {
 
     public $sourcePath = '@bower/jquery-querybuilder/dist';
 
+    /**
+     * @var string[]
+     */
     public $js = [
         'js/query-builder.standalone.js',
     ];
 
+    /**
+     * @var string[]
+     */
     public $css = [
         'css/query-builder.default.css',
     ];
 
+    /**
+     * @var string[]
+     */
     public $depends = [
         'yii\web\JqueryAsset'
     ];

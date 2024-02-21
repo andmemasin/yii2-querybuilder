@@ -37,19 +37,24 @@ use yii\helpers\ArrayHelper;
  */
 class Translator extends BaseObject
 {
-    private $_where;
-    private $_params = [];
-    private $_operators;
+    private string $_where;
+
+    /** @var array<string, mixed> */
+    private array $_params = [];
+
+    /** @var array<string, mixed> */
+    private array $_operators;
+
     /**
-     * @var array The params from yii\db\Query object that are already set so we don't overwrite them
+     * @var array<string, mixed> The params from yii\db\Query object that are already set so we don't overwrite them
      * @deprecated
      */
-    private $currentParams = [];
+    private array $currentParams = [];
 
     /**
      * Constructors.
-     * @param array $data Rules configuraion
-     * @param array $config the configuration array to be applied to this object.
+     * @param array<mixed> $data Rules configuraion
+     * @param array<string, mixed> $config the configuration array to be applied to this object.
      */
     public function __construct($data, $config = [])
     {
@@ -64,7 +69,7 @@ class Translator extends BaseObject
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init() : void
     {
         $this->_operators = [
             'equal' =>            '= ?',
@@ -94,8 +99,8 @@ class Translator extends BaseObject
     /**
      * Encodes filter rule into SQL condition
      * @param string $field field name
-     * @param string|array $type operator type
-     * @param string|array $params query parameters
+     * @param string|array<mixed> $type operator type
+     * @param string|array<string, mixed> $params query parameters
      * @return string encoded rule
      */
     protected function encodeRule($field, $type, $params)
@@ -124,7 +129,7 @@ class Translator extends BaseObject
     }
 
     /**
-     * @param array $data rules configuration
+     * @param array<mixed> $data rules configuration
      * @return string the WHERE clause
      */
     protected function buildWhere($data)
@@ -172,7 +177,7 @@ class Translator extends BaseObject
 
     /**
      * Returns the parameters to be bound to the query.
-     * @return array
+     * @return array<string,mixed>
      */
     public function params()
     {
@@ -190,10 +195,10 @@ class Translator extends BaseObject
 
     /**
      *
-     * @param array $currentParams
+     * @param array<string, mixed> $currentParams
      * @deprecated
      */
-    public function setCurrentParams($currentParams) {
+    public function setCurrentParams($currentParams) : void {
         $this->currentParams = $currentParams;
     }
 

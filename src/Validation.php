@@ -4,6 +4,7 @@ namespace leandrogehlen\querybuilder;
 
 
 use yii\base\BaseObject;
+use yii\web\JsExpression;
 
 /**
  * The validation object representation
@@ -43,7 +44,7 @@ class Validation extends BaseObject
     public $step;
 
     /**
-     * @var yii\web\JsExpression A function used to perform the validation.
+     * @var JsExpression A function used to perform the validation.
      * If provided, the default validation will not be performed. It must returns true if the value is valid
      * or an error string otherwise. It takes 4 parameters:
      * value
