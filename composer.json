@@ -32,11 +32,13 @@
   "require": {
     "yiisoft/yii2": "~2.0.0",
     "solutosoft/yii2-plugin": "~1.0.0",
-    "bower-asset/jquery-querybuilder": "^2.4.0",
+    "bower-asset/jquery-querybuilder": "^3",
     "pascaldevink/shortuuid": "^3.0 || ^4.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^8.0 || ^9.0"
+    "phpunit/phpunit": "^8.0 || ^9.0",
+    "phpstan/phpstan": "^1"
+
   },
   "autoload": {
     "psr-4": {
@@ -45,7 +47,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "2.0.x-dev"
+      "dev-master": "3.0.x-dev"
     }
   },
   "config": {
