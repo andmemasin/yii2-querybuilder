@@ -99,11 +99,11 @@ class Translator extends BaseObject
     /**
      * Encodes filter rule into SQL condition
      * @param string $field field name
-     * @param string|array<mixed> $type operator type
-     * @param string|array<string, mixed> $params query parameters
+     * @param string $type operator type
+     * @param array<string, mixed> $params query parameters
      * @return string encoded rule
      */
-    protected function encodeRule($field, $type, $params)
+    protected function encodeRule(string $field, string $type, array $params)
     {
         $pattern = $this->_operators[$type];
         $keys = array_keys($params);

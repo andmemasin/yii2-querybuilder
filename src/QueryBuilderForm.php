@@ -99,10 +99,11 @@ class QueryBuilderForm extends Widget
     public function init() : void
     {
         if (is_array($this->builder)) {
-            $this->builder = Yii::createObject(array_merge([
-                    'class' => QueryBuilder::className()
-                ], $this->builder)
-            );
+            /** @var QueryBuilder $builder */
+            $builder = Yii::createObject(array_merge([
+                'class' => QueryBuilder::class
+            ], $this->builder));
+            $this->builder = $builder;
         }
 
         if (!$this->builder instanceof QueryBuilder) {
@@ -125,7 +126,11 @@ class QueryBuilderForm extends Widget
     {
         echo Html::endForm();
 
+        /** @var string $id */
         $id = $this->options['id'];
+        if(!$this->builder instanceof QueryBuilder) {
+            throw new InvalidConfigException("Builder needs to be builder object");
+        }
         $builderId = $this->builder->getId();
         $view = $this->getView();
 
