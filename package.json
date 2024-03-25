@@ -1,0 +1,7 @@
+{
+  "name": "yii2-jquery-querybuilder",
+  "version": "1.0.0",
+  "dependencies": {
+    "jQuery-QueryBuilder": "^3.0.0"
+  }
+}
