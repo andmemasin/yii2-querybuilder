@@ -32,6 +32,11 @@ or add
 
 to the require section of your `composer.json` file.
 
+jquery-querybuilder dependency is installed via npm. You need to make sure your project npm installs 
+"jQuery-QueryBuilder": "^3.0.0". 
+
+The package will ue @npm alias to look for npm dependencies. 
+
 How to use
 ----------
 
