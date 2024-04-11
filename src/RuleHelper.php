@@ -7,9 +7,9 @@ class RuleHelper
 
     /**
      * Adds a table prefix for any field in conditions if not existing
-     * @param array $rules<string, mixed> for Translator
+     * @param array<string, mixed> $rules for Translator
      * @param string $prefix
-     * @return array
+     * @return array<string, mixed>
      */
     public static function addPrefixToRules(array $rules, string $prefix) : array
     {
