@@ -40,7 +40,8 @@
   },
   "autoload": {
     "psr-4": {
-      "leandrogehlen\\querybuilder\\": "src"
+      "leandrogehlen\\querybuilder\\": "src",
+      "leandrogehlen\\querybuilder\\tests\\": "tests"
     }
   },
   "extra": {

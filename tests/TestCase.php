@@ -1,6 +1,6 @@
 <?php
 
-namespace leandrogehlen\querybuilder\tests\unit;
+namespace leandrogehlen\querybuilder\tests;
 
 use yii\base\NotSupportedException;
 use Yii;
@@ -10,23 +10,6 @@ use Yii;
  */
 class TestCase extends  \PHPUnit\Framework\TestCase
 {
-    /**
-     * This method is called before the first test of this test class is run.
-     * Attempts to load vendor autoloader.
-     * @throws \yii\base\NotSupportedException
-     */
-    public static function setUpBeforeClass() : void
-    {
-        $vendorDir = __DIR__ . '/../vendor';
-        $vendorAutoload = $vendorDir . '/autoload.php';
-        if (file_exists($vendorAutoload)) {
-            require_once($vendorAutoload);
-        } else {
-            throw new NotSupportedException("Vendor autoload file '{$vendorAutoload}' is missing.");
-        }
-        require_once($vendorDir . '/yiisoft/yii2/Yii.php');
-        Yii::setAlias('@vendor', $vendorDir);
-    }
 
     /**
      * Populates Yii::$app with a new application

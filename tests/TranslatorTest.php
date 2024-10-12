@@ -1,10 +1,9 @@
 <?php
 
 
-namespace leandrogehlen\querybuilder\tests\unit;
+namespace leandrogehlen\querybuilder\tests;
 
 use leandrogehlen\querybuilder\Translator;
-use PascalDeVink\ShortUuid\ShortUuid;
 
 class TranslatorTest extends TestCase
 {
@@ -124,6 +123,9 @@ class TranslatorTest extends TestCase
     public function testHasParamValues($rule, $expected) {
         $translator = new Translator($rule);
         $params = $translator->params();
+        if(empty($expected[1])) {
+            $this->assertEquals([], $params);
+        }
         foreach ($expected[1] as $key => $value) {
             $values = array_values($params);
             $this->assertTrue(in_array($value,$values));

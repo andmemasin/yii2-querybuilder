@@ -18,7 +18,7 @@ use yii\helpers\ArrayHelper;
  *     $rules = Yii::$app->request->post('rules');
  *
  *     if ($rules) {
- *         $translator = new Translator(Json::decode($rules),['currentParams'=>$query->params]);
+ *         $translator = new Translator(Json::decode($rules));
  *         $query->andWhere($translator->where())
  *               ->addParams($translator->params());
  *     }
@@ -44,11 +44,7 @@ class Translator extends BaseObject
     /** @var array<string, mixed> */
     private array $_operators;
 
-    /**
-     * @var array<string, mixed> The params from yii\db\Query object that are already set so we don't overwrite them
-     * @deprecated
-     */
-    private array $currentParams = [];
+
 
     /**
      * Constructors.
@@ -57,10 +53,6 @@ class Translator extends BaseObject
      */
     public function __construct($data, $config = [])
     {
-        if(isset($config['currentParams'])){
-            $this->setCurrentParams($config['currentParams']);
-                    
-        }
         parent::__construct($config);
         $this->_where = $this->buildWhere($data);
     }
@@ -180,7 +172,7 @@ class Translator extends BaseObject
      */
     public function params()
     {
-        return array_merge($this->currentParams, $this->_params);
+        return $this->_params;
     }
     
     /**
@@ -192,15 +184,5 @@ class Translator extends BaseObject
         $security = \Yii::createObject(Security::class);
         return $security->generateRandomString(20);
     }
-
-    /**
-     *
-     * @param array<string, mixed> $currentParams
-     * @deprecated
-     */
-    public function setCurrentParams($currentParams) : void {
-        $this->currentParams = $currentParams;
-    }
-
 
 } 
