@@ -54,7 +54,7 @@ class Translator
     public function __construct(private readonly array $data, ?string $paramPrefix = null)
     {
         $this->init();
-        if($paramPrefix){
+        if(!is_null($paramPrefix)){
             $this->paramPrefix = $paramPrefix;
         }
         $this->_where = $this->buildWhere($this->data);
@@ -75,11 +75,11 @@ class Translator
         $keys = array_keys($params);
 
         if (is_string($pattern)) {
-            $replacement = !empty($keys) ? $keys[0] : null;
+            $replacement = count($keys)>0 ? $keys[0] : null;
         } else {
             $op = ArrayHelper::getValue($pattern, 'op');
             $list = ArrayHelper::getValue($pattern, 'list');
-            if ($list){
+            if (!is_null($list)){
                 $sep = ArrayHelper::getValue($pattern, 'sep');
                 $replacement = implode($sep, $keys);
             } else {
@@ -91,7 +91,7 @@ class Translator
         }
 
         $this->_params = array_merge($this->_params, $params);
-        return $field . " " . ($replacement ? str_replace("?", $replacement, $pattern) : $pattern);
+        return $field . " " . (is_null($replacement) ? $pattern : str_replace("?", $replacement, $pattern) );
     }
 
     /**
@@ -100,7 +100,7 @@ class Translator
      */
     protected function buildWhere(array $data) : string
     {
-        if (!isset($data['rules']) || !$data['rules']) {
+        if (!array_key_exists('rules', $data) || !is_array($data['rules']) || count($data['rules']) === 0 ) {
             return '';
         }
 

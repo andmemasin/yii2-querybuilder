@@ -13,7 +13,7 @@ class RuleHelper
      */
     public static function addPrefixToRules(array $rules, string $prefix) : array
     {
-        if (!isset($rules['rules']) || !$rules['rules']) {
+        if (!array_key_exists('rules', $rules) || !is_array($rules['rules']) || count($rules['rules']) === 0 ) {
             return $rules;
         }
 
@@ -32,8 +32,5 @@ class RuleHelper
         return $rules;
 
     }
-
-
-
 
 }

@@ -70,7 +70,7 @@ class QueryBuilderForm extends Widget
     public $rulesParam = 'rules';
 
     /**
-     * @var array<mixed>|QueryBuilder QueryBuilder column configuration.
+     * @var array<mixed>|QueryBuilder $builder QueryBuilder column configuration.
      * For example,
      *
      * ```php
@@ -91,7 +91,7 @@ class QueryBuilderForm extends Widget
     /**
      * @var string JSON rules representation into array format
      */
-    public $rules;
+    public string $rules = '';
 
     /**
      * @inheritdoc
@@ -106,7 +106,7 @@ class QueryBuilderForm extends Widget
             $this->builder = $builder;
         }
 
-        if (!$this->builder instanceof QueryBuilder) {
+        if (!($this->builder instanceof QueryBuilder)) {
             throw new InvalidConfigException('The "builder" property must be instance of "QueryBuilder');
         }
 
@@ -134,7 +134,7 @@ class QueryBuilderForm extends Widget
         $builderId = $this->builder->getId();
         $view = $this->getView();
 
-        if ($this->rules) {
+        if (strlen($this->rules) > 0) {
             $rules = Json::encode($this->rules);
             $view->registerJs("$('#{$builderId}').queryBuilder('setRules', {$rules});");
         }
