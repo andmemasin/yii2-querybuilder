@@ -9,7 +9,8 @@ use yii\web\AssetBundle;
  *
  * @author Leandro Gehlen <leandrogehlen@gmail.com>
  */
-class QueryBuilderAsset extends AssetBundle {
+class QueryBuilderAsset extends AssetBundle
+{
 
     public $sourcePath = '@npm/jQuery-QueryBuilder/dist';
 
@@ -33,6 +34,5 @@ class QueryBuilderAsset extends AssetBundle {
     public $depends = [
         'yii\web\JqueryAsset'
     ];
-
 
 }

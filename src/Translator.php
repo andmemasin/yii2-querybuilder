@@ -51,7 +51,7 @@ class Translator
      * @param array<mixed> $data Rules configuraion
      * @param ?string $paramPrefix prefix added to parameters, to be changed in case of multiple translator params being merged
      */
-    public function __construct(private array $data, ?string $paramPrefix = null)
+    public function __construct(private readonly array $data, ?string $paramPrefix = null)
     {
         $this->init();
         if($paramPrefix){
@@ -69,7 +69,7 @@ class Translator
      * @param array<string, mixed> $params query parameters
      * @return string encoded rule
      */
-    protected function encodeRule(string $field, string $type, array $params)
+    protected function encodeRule(string $field, string $type, array $params): string
     {
         $pattern = $this->_operators[$type];
         $keys = array_keys($params);
@@ -98,7 +98,7 @@ class Translator
      * @param array<mixed> $data rules configuration
      * @return string the WHERE clause
      */
-    protected function buildWhere($data)
+    protected function buildWhere(array $data) : string
     {
         if (!isset($data['rules']) || !$data['rules']) {
             return '';
@@ -137,7 +137,7 @@ class Translator
      * Returns query WHERE condition.
      * @return string
      */
-    public function where()
+    public function where() : string
     {
         return $this->_where;
     }
@@ -146,7 +146,7 @@ class Translator
      * Returns the parameters to be bound to the query.
      * @return array<string,mixed>
      */
-    public function params()
+    public function params() : array
     {
         return $this->_params;
     }
