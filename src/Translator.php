@@ -57,12 +57,14 @@ class Translator
         if(!is_null($paramPrefix)){
             $this->paramPrefix = $paramPrefix;
         }
-        $rules = $this->data;
+
         if(is_array($this->data)) {
             /** @var Rule $rules */
             $rules = \Yii::createObject(array_merge([
                 'class' => Rule::class,
             ],$this->data));
+        } else {
+            $rules = $this->data;
         }
 
         $this->_where = $this->buildWhere($rules);
