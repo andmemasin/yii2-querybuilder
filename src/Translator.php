@@ -51,16 +51,19 @@ class Translator
      * @param array<mixed> $data Rules configuraion
      * @param ?string $paramPrefix prefix added to parameters, to be changed in case of multiple translator params being merged
      */
-    public function __construct(private readonly array $data, ?string $paramPrefix = null)
+    public function __construct(private readonly array|Rule $data, ?string $paramPrefix = null)
     {
         $this->init();
         if(!is_null($paramPrefix)){
             $this->paramPrefix = $paramPrefix;
         }
-        /** @var Rule $rules */
-        $rules = \Yii::createObject(array_merge([
-            'class' => Rule::class,
-        ],$this->data));
+        $rules = $this->data;
+        if(is_array($this->data)) {
+            /** @var Rule $rules */
+            $rules = \Yii::createObject(array_merge([
+                'class' => Rule::class,
+            ],$this->data));
+        }
 
         $this->_where = $this->buildWhere($rules);
 
