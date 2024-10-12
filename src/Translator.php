@@ -57,11 +57,12 @@ class Translator
         if(!is_null($paramPrefix)){
             $this->paramPrefix = $paramPrefix;
         }
+        /** @var Rule $rules */
         $rules = \Yii::createObject(array_merge([
             'class' => Rule::class,
         ],$this->data));
-//        $this->_where = $this->buildWhere($this->data);
-        $this->_where = $this->buildWhereO($rules);
+
+        $this->_where = $this->buildWhere($rules);
 
     }
 
@@ -98,66 +99,27 @@ class Translator
         return $field . " " . (is_null($replacement) ? $pattern : str_replace("?", $replacement, $pattern) );
     }
 
-    /**
-     * @param array<mixed> $data rules configuration
-     * @return string the WHERE clause
-     */
-    protected function buildWhere(array $data) : string
-    {
-        if (!array_key_exists('rules', $data) || !is_array($data['rules']) || count($data['rules']) === 0 ) {
-            return '';
-        }
-
-        $where = [];
-        $condition = " " . $data['condition'] . " ";
-
-        foreach ($data['rules'] as $rule) {
-            if (isset($rule['condition'])) {
-                $where[] = $this->buildWhere($rule);
-            } else {
-                $params = [];
-                $operator = $rule['operator'];
-                $field = $rule['field'];
-                $value = ArrayHelper::getValue($rule, 'value');
-
-                if ($value !== null) {
-                    $i = count($this->_params);
-                    if (!is_array($value)) {
-                        $value = [$value];
-                    }
-
-                    foreach ($value as $v) {
-                        $params[":{$this->paramPrefix}_$i"] = $v;
-                        $i++;
-                    }
-                }
-                $where[] = $this->encodeRule($field, $operator, $params);
-            }
-        }
-        return "(" . implode($condition, $where) . ")";
-    }
-
 
     /**
      * @return string the WHERE clause
      */
-    protected function buildWhereO(Rule $inputRule) : string
+    protected function buildWhere(Rule $rule) : string
     {
-        if(count($inputRule->children) === 0) {
+        if(count($rule->children) === 0) {
             return '';
         }
 
         $where = [];
-        $condition = " " . $inputRule->condition . " ";
+        $condition = " " . $rule->condition . " ";
 
-        foreach ($inputRule->children as $rule) {
-            if (isset($rule->condition)) {
-                $where[] = $this->buildWhereO($rule);
+        foreach ($rule->children as $child) {
+            if (isset($child->condition)) {
+                $where[] = $this->buildWhere($child);
             } else {
                 $params = [];
-                $operator = $rule->operator;
-                $field = $rule->field;
-                $value = ArrayHelper::getValue($rule, 'value');
+                $operator = $child->operator;
+                $field = $child->field;
+                $value = ArrayHelper::getValue($child, 'value');
 
                 if ($value !== null) {
                     $i = count($this->_params);

@@ -89,7 +89,7 @@ class QueryBuilderForm extends Widget
     public $builder;
 
     /**
-     * @var string|array JSON rules representation into array format
+     * @var string|array<string, mixed> JSON rules representation into array format
      */
     public string|array $rules = '';
 

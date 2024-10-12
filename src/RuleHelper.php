@@ -7,28 +7,22 @@ class RuleHelper
 
     /**
      * Adds a table prefix for any field in conditions if not existing
-     * @param array<'rules','condition','field'> $rules for Translator
-     * @param string $prefix
-     * @return array<string, mixed>
      */
-    public static function addPrefixToRules(array $rules, string $prefix) : array
+    public static function addPrefixToRules(Rule $rules, string $prefix) : Rule
     {
-        if (!array_key_exists('rules', $rules) || !is_array($rules['rules']) || count($rules['rules']) === 0 ) {
+        if(count($rules->children) === 0) {
             return $rules;
         }
 
-        $out = [];
-        foreach ($rules['rules'] as $key => $rule) {
-            if (isset($rule['condition'])) {
-                $out[$key] = static::addPrefixToRules($rule, $prefix);
+        foreach ($rules->children as $key => $child) {
+            if ($child->condition !== null) {
+                $rules->children[$key] = static::addPrefixToRules($child, $prefix);
             } else {
-                if(!str_contains($rule['field'], ".")) {
-                    $rule['field'] = "$prefix.".$rule['field'];
+                if(!str_contains($child->field, ".")) {
+                    $child->field = "$prefix.".$child->field;
                 }
-                $out[$key] = $rule;
             }
         }
-        $rules['rules'] = $out;
         return $rules;
 
     }
