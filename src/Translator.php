@@ -2,8 +2,6 @@
 
 namespace leandrogehlen\querybuilder;
 
-use yii\base\BaseObject;
-use yii\base\Security;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -34,7 +32,7 @@ use yii\helpers\ArrayHelper;
  * ```
  * @author Leandro Gehlen <leandrogehlen@gmail.com>
  */
-class Translator extends BaseObject
+class Translator
 {
     private string $_where;
 
@@ -44,46 +42,23 @@ class Translator extends BaseObject
     /** @var array<string, mixed> */
     private array $_operators;
 
+    /** @var string $paramPrefix prefix added to parameters, to be changed in case of multiple translator params being merged */
+    private string $paramPrefix = "p";
 
 
     /**
      * Constructors.
      * @param array<mixed> $data Rules configuraion
-     * @param array<string, mixed> $config the configuration array to be applied to this object.
+     * @param ?string $paramPrefix prefix added to parameters, to be changed in case of multiple translator params being merged
      */
-    public function __construct($data, $config = [])
+    public function __construct(private array $data, ?string $paramPrefix = null)
     {
-        parent::__construct($config);
-        $this->_where = $this->buildWhere($data);
-    }
+        $this->init();
+        if($paramPrefix){
+            $this->paramPrefix = $paramPrefix;
+        }
+        $this->_where = $this->buildWhere($this->data);
 
-    /**
-     * @inheritdoc
-     */
-    public function init() : void
-    {
-        $this->_operators = [
-            'equal' =>            '= ?',
-            'not_equal' =>        '<> ?',
-            'in' =>               ['op' => 'IN (?)',     'list' => true, 'sep' => ', ' ],
-            'not_in' =>           ['op' => 'NOT IN (?)', 'list' => true, 'sep' => ', '],
-            'less' =>             '< ?',
-            'less_or_equal' =>    '<= ?',
-            'greater' =>          '> ?',
-            'greater_or_equal' => '>= ?',
-            'between' =>          ['op' => 'BETWEEN ?',   'list' => true, 'sep' => ' AND '],
-            'not_between' =>      ['op' => 'NOT BETWEEN ?',   'list' => true, 'sep' => ' AND '],
-            'begins_with' =>      ['op' => 'LIKE ?',     'fn' => function($value){ return "$value%"; } ],
-            'not_begins_with' =>  ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "$value%"; } ],
-            'contains' =>         ['op' => 'LIKE ?',     'fn' => function($value){ return "%$value%"; } ],
-            'not_contains' =>     ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "%$value%"; } ],
-            'ends_with' =>        ['op' => 'LIKE ?',     'fn' => function($value){ return "%$value"; } ],
-            'not_ends_with' =>    ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "%$value"; } ],
-            'is_empty' =>         '= ""',
-            'is_not_empty' =>     '<> ""',
-            'is_null' =>          'IS NULL',
-            'is_not_null' =>      'IS NOT NULL'
-        ];
     }
 
 
@@ -142,13 +117,14 @@ class Translator extends BaseObject
                 $value = ArrayHelper::getValue($rule, 'value');
 
                 if ($value !== null) {
-
+                    $i = count($this->_params);
                     if (!is_array($value)) {
                         $value = [$value];
                     }
 
                     foreach ($value as $v) {
-                        $params[":".$this->getNewParamName()] = $v;
+                        $params[":{$this->paramPrefix}_$i"] = $v;
+                        $i++;
                     }
                 }
                 $where[] = $this->encodeRule($field, $operator, $params);
@@ -174,15 +150,36 @@ class Translator extends BaseObject
     {
         return $this->_params;
     }
-    
+
+
+
     /**
-     * Get a param name that should not conflict with any params already set
-     * @return string
+     * @inheritdoc
      */
-    private function getNewParamName(){
-        /** @var Security $security */
-        $security = \Yii::createObject(Security::class);
-        return $security->generateRandomString(20);
+    private function init() : void
+    {
+        $this->_operators = [
+            'equal' =>            '= ?',
+            'not_equal' =>        '<> ?',
+            'in' =>               ['op' => 'IN (?)',     'list' => true, 'sep' => ', ' ],
+            'not_in' =>           ['op' => 'NOT IN (?)', 'list' => true, 'sep' => ', '],
+            'less' =>             '< ?',
+            'less_or_equal' =>    '<= ?',
+            'greater' =>          '> ?',
+            'greater_or_equal' => '>= ?',
+            'between' =>          ['op' => 'BETWEEN ?',   'list' => true, 'sep' => ' AND '],
+            'not_between' =>      ['op' => 'NOT BETWEEN ?',   'list' => true, 'sep' => ' AND '],
+            'begins_with' =>      ['op' => 'LIKE ?',     'fn' => function($value){ return "$value%"; } ],
+            'not_begins_with' =>  ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "$value%"; } ],
+            'contains' =>         ['op' => 'LIKE ?',     'fn' => function($value){ return "%$value%"; } ],
+            'not_contains' =>     ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "%$value%"; } ],
+            'ends_with' =>        ['op' => 'LIKE ?',     'fn' => function($value){ return "%$value"; } ],
+            'not_ends_with' =>    ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "%$value"; } ],
+            'is_empty' =>         '= ""',
+            'is_not_empty' =>     '<> ""',
+            'is_null' =>          'IS NULL',
+            'is_not_null' =>      'IS NOT NULL',
+        ];
     }
 
-} 
+}

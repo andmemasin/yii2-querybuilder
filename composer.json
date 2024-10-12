@@ -30,6 +30,7 @@
     }
   ],
   "require": {
+    "php" : ">=8.0",
     "yiisoft/yii2": "~2.0.0",
     "solutosoft/yii2-plugin": "~1.0.0"
   },
