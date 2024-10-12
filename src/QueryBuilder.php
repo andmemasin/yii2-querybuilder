@@ -2,20 +2,18 @@
 
 namespace leandrogehlen\querybuilder;
 
-use yii\base\Widget;
-
 /**
  * QueryBuilder renders a jQuery QueryBuilder component.
  *
  * @see http://mistic100.github.io/jQuery-QueryBuilder/
  * @author Leandro Gehlen <leandrogehlen@gmail.com>
  */
-class QueryBuilder extends Widget {
+class QueryBuilder extends \soluto\plugin\Widget {
 
     /**
      * @inheridoc
      */
-    public string $pluginName = 'queryBuilder';
+    public $pluginName = 'queryBuilder';
 
     /**
      * @return string[]

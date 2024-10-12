@@ -9,3 +9,4 @@ parameters:
         - stan_autoload.php
     treatPhpDocTypesAsCertain: false
     reportMaybesInPropertyPhpDocTypes: false
+    checkImplicitMixed: true

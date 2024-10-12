@@ -89,9 +89,9 @@ class QueryBuilderForm extends Widget
     public $builder;
 
     /**
-     * @var string JSON rules representation into array format
+     * @var string|array JSON rules representation into array format
      */
-    public string $rules = '';
+    public string|array $rules = '';
 
     /**
      * @inheritdoc
@@ -134,7 +134,7 @@ class QueryBuilderForm extends Widget
         $builderId = $this->builder->getId();
         $view = $this->getView();
 
-        if (strlen($this->rules) > 0) {
+        if (is_array($this->rules) or strlen($this->rules) > 0) {
             $rules = Json::encode($this->rules);
             $view->registerJs("$('#{$builderId}').queryBuilder('setRules', {$rules});");
         }

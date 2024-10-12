@@ -57,7 +57,11 @@ class Translator
         if(!is_null($paramPrefix)){
             $this->paramPrefix = $paramPrefix;
         }
-        $this->_where = $this->buildWhere($this->data);
+        $rules = \Yii::createObject(array_merge([
+            'class' => Rule::class,
+        ],$this->data));
+//        $this->_where = $this->buildWhere($this->data);
+        $this->_where = $this->buildWhereO($rules);
 
     }
 
@@ -133,6 +137,45 @@ class Translator
         return "(" . implode($condition, $where) . ")";
     }
 
+
+    /**
+     * @return string the WHERE clause
+     */
+    protected function buildWhereO(Rule $inputRule) : string
+    {
+        if(count($inputRule->children) === 0) {
+            return '';
+        }
+
+        $where = [];
+        $condition = " " . $inputRule->condition . " ";
+
+        foreach ($inputRule->children as $rule) {
+            if (isset($rule->condition)) {
+                $where[] = $this->buildWhereO($rule);
+            } else {
+                $params = [];
+                $operator = $rule->operator;
+                $field = $rule->field;
+                $value = ArrayHelper::getValue($rule, 'value');
+
+                if ($value !== null) {
+                    $i = count($this->_params);
+                    if (!is_array($value)) {
+                        $value = [$value];
+                    }
+
+                    foreach ($value as $v) {
+                        $params[":{$this->paramPrefix}_$i"] = $v;
+                        $i++;
+                    }
+                }
+                $where[] = $this->encodeRule($field, $operator, $params);
+            }
+        }
+        return "(" . implode($condition, $where) . ")";
+    }
+
     /**
      * Returns query WHERE condition.
      * @return string
@@ -169,12 +212,12 @@ class Translator
             'greater_or_equal' => '>= ?',
             'between' =>          ['op' => 'BETWEEN ?',   'list' => true, 'sep' => ' AND '],
             'not_between' =>      ['op' => 'NOT BETWEEN ?',   'list' => true, 'sep' => ' AND '],
-            'begins_with' =>      ['op' => 'LIKE ?',     'fn' => function($value){ return "$value%"; } ],
-            'not_begins_with' =>  ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "$value%"; } ],
-            'contains' =>         ['op' => 'LIKE ?',     'fn' => function($value){ return "%$value%"; } ],
-            'not_contains' =>     ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "%$value%"; } ],
-            'ends_with' =>        ['op' => 'LIKE ?',     'fn' => function($value){ return "%$value"; } ],
-            'not_ends_with' =>    ['op' => 'NOT LIKE ?', 'fn' => function($value){ return "%$value"; } ],
+            'begins_with' =>      ['op' => 'LIKE ?',     'fn' => function(string $value){ return "$value%"; } ],
+            'not_begins_with' =>  ['op' => 'NOT LIKE ?', 'fn' => function(string $value){ return "$value%"; } ],
+            'contains' =>         ['op' => 'LIKE ?',     'fn' => function(string $value){ return "%$value%"; } ],
+            'not_contains' =>     ['op' => 'NOT LIKE ?', 'fn' => function(string $value){ return "%$value%"; } ],
+            'ends_with' =>        ['op' => 'LIKE ?',     'fn' => function(string $value){ return "%$value"; } ],
+            'not_ends_with' =>    ['op' => 'NOT LIKE ?', 'fn' => function(string $value){ return "%$value"; } ],
             'is_empty' =>         '= ""',
             'is_not_empty' =>     '<> ""',
             'is_null' =>          'IS NULL',
