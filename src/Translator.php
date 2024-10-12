@@ -2,9 +2,8 @@
 
 namespace leandrogehlen\querybuilder;
 
-use PascalDeVink\ShortUuid\ShortUuid;
-use Ramsey\Uuid\Uuid;
 use yii\base\BaseObject;
+use yii\base\Security;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -189,8 +188,9 @@ class Translator extends BaseObject
      * @return string
      */
     private function getNewParamName(){
-        $shortUUid = new ShortUuid();
-        return $shortUUid->encode(Uuid::uuid4());
+        /** @var Security $security */
+        $security = \Yii::createObject(Security::class);
+        return $security->generateRandomString(20);
     }
 
     /**
