@@ -15,17 +15,10 @@ class RuleHelperTest extends TestCase
      */
     public function testPrefixesGetAdded(?string $paramPrefix,array $ruleData, array $expected1,?string $tablePrefix, string $expected)
     {
-        /** @var RuleHelper $helper */
-        $helper = \Yii::createObject(RuleHelper::class);
-
-        /** @var Rule $rules */
-        $rules = \Yii::createObject(array_merge([
-            'class' => Rule::class,
-        ],$ruleData));
-
+        $helper = new RuleHelper();
+        $rules = new Rule($ruleData);
         $rules = $helper->addPrefixToRules($rules, $tablePrefix);
-        /** @var Translator $translator */
-        $translator = \Yii::createObject(Translator::class, [$rules, $paramPrefix]);
+        $translator = new Translator($rules, $paramPrefix);
         $this->assertEquals($expected, $translator->where());
     }
 

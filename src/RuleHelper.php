@@ -18,7 +18,7 @@ class RuleHelper
             if ($child->condition !== null) {
                 $rules->children[$key] = static::addPrefixToRules($child, $prefix);
             } else {
-                if(!str_contains($child->field, ".")) {
+                if(!is_null($child->field) && !str_contains($child->field, ".")) {
                     $child->field = "$prefix.".$child->field;
                 }
             }

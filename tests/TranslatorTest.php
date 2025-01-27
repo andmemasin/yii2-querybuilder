@@ -152,8 +152,7 @@ class TranslatorTest extends TestCase
     public function testRules(?string $paramPrefix, array $rule, array $expected)
     {
         $expectedWhere = $expected[0];
-        /** @var Translator $translator */
-        $translator = \Yii::createObject(Translator::class, [$rule, $paramPrefix]);
+        $translator = new Translator($rule, $paramPrefix);
         $this->assertEquals($expectedWhere, $translator->where());
     }
 
@@ -161,8 +160,7 @@ class TranslatorTest extends TestCase
      * @dataProvider rulesProvider
      */
     public function testHasParamValues(?string $paramPrefix, array $rule, array $expected) {
-        /** @var Translator $translator */
-        $translator = \Yii::createObject(Translator::class, [$rule, $paramPrefix]);
+        $translator = new Translator($rule, $paramPrefix);
         $params = $translator->params();
         if(empty($expected[1])) {
             $this->assertEquals([], $params);
@@ -177,8 +175,7 @@ class TranslatorTest extends TestCase
      * @dataProvider rulesProvider
      */
     public function testHasRightParamsCount(?string $paramPrefix, array $rule, array $expected) {
-        /** @var Translator $translator */
-        $translator = \Yii::createObject(Translator::class, [$rule, $paramPrefix]);
+        $translator = new Translator($rule, $paramPrefix);
         $params = $translator->params();
         $this->assertEquals(count($params),count($expected[1]));
     }
@@ -188,13 +185,11 @@ class TranslatorTest extends TestCase
      */
     public function testMergedRulesParams(array $mergedRules, array $expected)
     {
-        /** @var Query $query */
-        $query = \Yii::createObject(Query::class);
+        $query = new Query();
         foreach ($mergedRules as $item) {
             $paramPrefix = $item[0];
             $rule = $item[1];
-            /** @var Translator $translator */
-            $translator = \Yii::createObject(Translator::class, [$rule, $paramPrefix]);
+            $translator = new Translator($rule, $paramPrefix);
             $query->andWhere($translator->where());
             $query->addParams($translator->params());
         }
@@ -210,13 +205,11 @@ class TranslatorTest extends TestCase
      */
     public function testMergedRulesWhere(array $mergedRules, array $expected)
     {
-        /** @var Query $query */
-        $query = \Yii::createObject(Query::class);
+        $query = new Query();
         foreach ($mergedRules as $item) {
             $paramPrefix = $item[0];
             $rule = $item[1];
-            /** @var Translator $translator */
-            $translator = \Yii::createObject(Translator::class, [$rule, $paramPrefix]);
+            $translator = new Translator($rule, $paramPrefix);
             $query->andWhere($translator->where());
             $query->addParams($translator->params());
         }

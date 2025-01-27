@@ -2,19 +2,18 @@
 
 namespace leandrogehlen\querybuilder;
 
-use yii\base\Component;
 
-class Rule extends Component
+class Rule
 {
 
-    public bool $valid;
+    public ?bool $valid;
     public ?string $condition = null;
 
-    public string|int $id;
-    public string $field;
-    public string $type;
-    public string $input;
-    public string $operator;
+    public null|string|int $id;
+    public ?string $field;
+    public ?string $type;
+    public ?string $input;
+    public ?string $operator;
     public mixed $value = null;
 
 
@@ -23,15 +22,26 @@ class Rule extends Component
     /** @var self[] */
     public array $children = [];
 
-    public function init() : void
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    public function __construct(array $attributes = [])
     {
-        parent::init();
-        foreach ($this->rules as $ruleAttributes) {
-            /** @var Rule $child */
-            $child = \Yii::createObject(array_merge([
-                'class' => self::class,
-            ],$ruleAttributes));
-            $this->children[] = $child;
+        $this->valid = $attributes['valid'] ?? null;
+        $this->condition = $attributes['condition'] ?? null;
+
+        $this->rules = $attributes['rules'] ?? [];
+
+
+        $this->id = $attributes['id'] ?? null;
+        $this->field = $attributes['field'] ?? null;
+        $this->type = $attributes['type'] ?? null;
+        $this->input = $attributes['input'] ?? null;
+        $this->operator = $attributes['operator'] ?? null;
+        $this->value = $attributes['value'] ?? null;
+
+        foreach ($this->rules as $rule) {
+            $this->children[] = new Rule($rule);
         }
     }
 }

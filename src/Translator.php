@@ -2,7 +2,7 @@
 
 namespace leandrogehlen\querybuilder;
 
-use yii\helpers\ArrayHelper;
+use Yiisoft\Arrays\ArrayHelper;
 
 /**
  * Translator is used to build WHERE clauses from rules configuration
@@ -48,21 +48,18 @@ class Translator
 
     /**
      * Constructors.
-     * @param array<mixed> $data Rules configuraion
+     * @param array<mixed> $data Rules configuration
      * @param ?string $paramPrefix prefix added to parameters, to be changed in case of multiple translator params being merged
      */
     public function __construct(private readonly array|Rule $data, ?string $paramPrefix = null)
     {
-        $this->init();
+        $this->initOperators();
         if(!is_null($paramPrefix)){
             $this->paramPrefix = $paramPrefix;
         }
 
         if(is_array($this->data)) {
-            /** @var Rule $rules */
-            $rules = \Yii::createObject(array_merge([
-                'class' => Rule::class,
-            ],$this->data));
+            $rules = new Rule($this->data);
         } else {
             $rules = $this->data;
         }
@@ -87,17 +84,17 @@ class Translator
         if (is_string($pattern)) {
             $replacement = count($keys)>0 ? $keys[0] : null;
         } else {
-            $op = ArrayHelper::getValue($pattern, 'op');
-            $list = ArrayHelper::getValue($pattern, 'list');
-            if (!is_null($list)){
+            $operator = ArrayHelper::getValue($pattern, 'op');
+            $isList = ArrayHelper::getValue($pattern, 'list', false);
+            if ($isList === true){
                 $sep = ArrayHelper::getValue($pattern, 'sep');
                 $replacement = implode($sep, $keys);
             } else {
-                $fn = ArrayHelper::getValue($pattern, 'fn');
+                $callback = ArrayHelper::getValue($pattern, 'fn');
                 $replacement = key($params);
-                $params[$replacement] = call_user_func($fn, $params[$replacement]);
+                $params[$replacement] = call_user_func($callback, $params[$replacement]);
             }
-            $pattern = $op;
+            $pattern = $operator;
         }
 
         $this->_params = array_merge($this->_params, $params);
@@ -124,6 +121,9 @@ class Translator
                 $params = [];
                 $operator = $child->operator;
                 $field = $child->field;
+                if(is_null($field) or is_null($operator)) {
+                    continue;
+                }
                 $value = ArrayHelper::getValue($child, 'value');
 
                 if ($value !== null) {
@@ -163,10 +163,7 @@ class Translator
 
 
 
-    /**
-     * @inheritdoc
-     */
-    private function init() : void
+    private function initOperators() : void
     {
         $this->_operators = [
             'equal' =>            '= ?',
