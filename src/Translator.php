@@ -48,7 +48,7 @@ class Translator
 
     /**
      * Constructors.
-     * @param array<mixed> $data Rules configuration
+     * @param array<string, mixed> $data Rules configuration
      * @param ?string $paramPrefix prefix added to parameters, to be changed in case of multiple translator params being merged
      */
     public function __construct(private readonly array|Rule $data, ?string $paramPrefix = null)
