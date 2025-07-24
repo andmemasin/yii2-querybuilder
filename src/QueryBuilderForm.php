@@ -99,6 +99,7 @@ class QueryBuilderForm extends Widget
     public function init() : void
     {
         if (is_array($this->builder)) {
+            /** @var array{class: class-string} $config */
             $config = array_merge([
                 'class' => QueryBuilder::class
             ], $this->builder);
