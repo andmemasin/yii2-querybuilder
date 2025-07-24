@@ -33,7 +33,7 @@ class QueryBuilderSelect2Asset extends AssetBundle
     ];
 
     /**
-     * @var string[]
+     * @var array<class-string>
      */
     public $depends = [
         'leandrogehlen\querybuilder\QueryBuilderAsset',

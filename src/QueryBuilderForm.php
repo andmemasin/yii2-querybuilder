@@ -99,10 +99,11 @@ class QueryBuilderForm extends Widget
     public function init() : void
     {
         if (is_array($this->builder)) {
-            /** @var QueryBuilder $builder */
-            $builder = Yii::createObject(array_merge([
+            $config = array_merge([
                 'class' => QueryBuilder::class
-            ], $this->builder));
+            ], $this->builder);
+            /** @var QueryBuilder $builder */
+            $builder = Yii::createObject($config);
             $this->builder = $builder;
         }
 

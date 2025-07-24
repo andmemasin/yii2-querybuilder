@@ -29,7 +29,7 @@ class QueryBuilderAsset extends AssetBundle
     ];
 
     /**
-     * @var string[]
+     * @var array<class-string>
      */
     public $depends = [
         'yii\web\JqueryAsset'
