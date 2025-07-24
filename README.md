@@ -109,3 +109,9 @@ public function actionIndex()
 
 }
 ```
+
+## Select2 Plugin
+
+For applications with many fields (30+), you can enable searchable field dropdowns using the Select2 plugin.
+
+See [SELECT2_PLUGIN.md](SELECT2_PLUGIN.md) for installation and usage instructions.
