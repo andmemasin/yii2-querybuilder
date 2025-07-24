@@ -12,7 +12,7 @@ use yii\web\AssetBundle;
  */
 class QueryBuilderSelect2Asset extends AssetBundle
 {
-    public function init()
+    public function init(): void
     {
         $this->sourcePath = __DIR__ . '/assets';
         parent::init();

@@ -41,7 +41,9 @@ class Rule
         $this->value = $attributes['value'] ?? null;
 
         foreach ($this->rules as $rule) {
-            $this->children[] = new Rule($rule);
+            if (is_array($rule)) {
+                $this->children[] = new Rule($rule);
+            }
         }
     }
 }

@@ -4,7 +4,7 @@
 !.scrutinizer.yml
 !.travis.yml
 !.github
-
+phpstan-dev.neon
 
 # netbeans project files
 nbproject
