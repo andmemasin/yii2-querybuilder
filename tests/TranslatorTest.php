@@ -113,6 +113,50 @@ class TranslatorTest extends TestCase
         ];
     }
 
+    public function testIsNullWithProvidedEmptyValueHasNoParams()
+    {
+        $paramPrefix = 'x';
+        $rule = ['condition' => 'and', 'rules' => [
+            ['field' => 'name', 'type' => 'string', 'operator' => 'is_null', 'value' => ''],
+        ]];
+        $translator = new Translator($rule, $paramPrefix);
+        $this->assertEquals('(name IS NULL)', $translator->where());
+        $this->assertEquals([], $translator->params());
+    }
+
+    public function testIsNotNullWithProvidedFalseValueHasNoParams()
+    {
+        $paramPrefix = 'y';
+        $rule = ['condition' => 'and', 'rules' => [
+            ['field' => 'name', 'type' => 'string', 'operator' => 'is_not_null', 'value' => false],
+        ]];
+        $translator = new Translator($rule, $paramPrefix);
+        $this->assertEquals('(name IS NOT NULL)', $translator->where());
+        $this->assertEquals([], $translator->params());
+    }
+
+    public function testEqualWithNullTranslatesToIsNull()
+    {
+        $paramPrefix = 'z';
+        $rule = ['condition' => 'and', 'rules' => [
+            ['field' => 'volume', 'type' => 'integer', 'operator' => 'equal', 'value' => null],
+        ]];
+        $translator = new Translator($rule, $paramPrefix);
+        $this->assertEquals('(volume IS NULL)', $translator->where());
+        $this->assertEquals([], $translator->params());
+    }
+
+    public function testNotEqualWithNullTranslatesToIsNotNull()
+    {
+        $paramPrefix = 'w';
+        $rule = ['condition' => 'and', 'rules' => [
+            ['field' => 'volume', 'type' => 'integer', 'operator' => 'not_equal', 'value' => null],
+        ]];
+        $translator = new Translator($rule, $paramPrefix);
+        $this->assertEquals('(volume IS NOT NULL)', $translator->where());
+        $this->assertEquals([], $translator->params());
+    }
+
     public static function mergedRulesProvider() : array
     {
         return [
@@ -177,7 +221,7 @@ class TranslatorTest extends TestCase
     public function testHasRightParamsCount(?string $paramPrefix, array $rule, array $expected) {
         $translator = new Translator($rule, $paramPrefix);
         $params = $translator->params();
-        $this->assertEquals(count($params),count($expected[1]));
+        $this->assertSameSize($params, $expected[1]);
     }
 
     /**
@@ -197,7 +241,7 @@ class TranslatorTest extends TestCase
         $expectedWhere = $expected[0];
         $expectedParams = $expected[1];
         $this->assertEquals($expectedParams, $params);
-        $this->assertEquals($expectedParams, $params);
+        $this->assertEquals($expectedWhere, $query->where);
 
     }
     /**

@@ -82,7 +82,12 @@ class Translator
         $keys = array_keys($params);
 
         if (is_string($pattern)) {
-            $replacement = count($keys)>0 ? $keys[0] : null;
+            // If pattern has no placeholder, this operator doesn't consume a value.
+            // Return early and avoid merging any (possibly stray) params.
+            if (strpos($pattern, '?') === false) {
+                return $field . " " . $pattern;
+            }
+            $replacement = count($keys) > 0 ? $keys[0] : null;
         } else {
             $operator = ArrayHelper::getValue($pattern, 'op');
             $isList = ArrayHelper::getValue($pattern, 'list', false);
@@ -126,7 +131,22 @@ class Translator
                 }
                 $value = ArrayHelper::getValue($child, 'value');
 
-                if ($value !== null) {
+                // Determine if operator consumes a value (placeholder or list op)
+                $pattern = $this->_operators[$operator] ?? null;
+                $consumesValue = is_array($pattern) || (is_string($pattern) && strpos($pattern, '?') !== false);
+
+                // Translate equality with null into IS NULL/IS NOT NULL for robustness
+                if ($value === null && $consumesValue === true) {
+                    if ($operator === 'equal') {
+                        $operator = 'is_null';
+                        $consumesValue = false;
+                    } elseif ($operator === 'not_equal') {
+                        $operator = 'is_not_null';
+                        $consumesValue = false;
+                    }
+                }
+
+                if ($consumesValue && $value !== null) {
                     $i = count($this->_params);
                     if (!is_array($value)) {
                         $value = [$value];
