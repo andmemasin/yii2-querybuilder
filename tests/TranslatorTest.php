@@ -260,4 +260,58 @@ class TranslatorTest extends TestCase
         $expectedWhere = $expected[0];
         $this->assertEquals($expectedWhere, $query->where);
     }
+
+    public function testDefaultLeavesFieldsUnquoted()
+    {
+        $rule = ['condition' => 'and', 'rules' => [
+            ['field' => 't.name', 'type' => 'string', 'operator' => 'equal', 'value' => 'joe'],
+        ]];
+        $this->assertEquals('(t.name = :p_0)', (new Translator($rule))->where());
+    }
+
+    public function testFieldQuoterQuotesEveryFieldAndKeepsParams()
+    {
+        $rule = ['condition' => 'and', 'rules' => [
+            ['field' => '149387X713X4315', 'type' => 'string', 'operator' => 'in', 'value' => ['1', '2']],
+            ['condition' => 'or', 'rules' => [
+                ['field' => 'name', 'type' => 'string', 'operator' => 'is_null'],
+                ['field' => 'name', 'type' => 'string', 'operator' => 'contains', 'value' => 'jo'],
+            ]],
+        ]];
+        $plain = new Translator($rule, 'q');
+        $quoted = new Translator($rule, 'q', Translator::quoteMysqlIdentifier(...));
+        $this->assertEquals(
+            '(`149387X713X4315` IN (:q_0, :q_1) and (`name` IS NULL or `name` LIKE :q_2))',
+            $quoted->where()
+        );
+        $this->assertSame($plain->params(), $quoted->params());
+    }
+
+    public function testFieldQuoterAcceptsAnyCallable()
+    {
+        $rule = ['condition' => 'and', 'rules' => [
+            ['field' => 'name', 'type' => 'string', 'operator' => 'equal', 'value' => 'joe'],
+        ]];
+        $translator = new Translator($rule, null, fn(string $field): string => "[$field]");
+        $this->assertEquals('([name] = :p_0)', $translator->where());
+    }
+
+    public static function mysqlIdentifierProvider(): array
+    {
+        return [
+            'plain' => ['col', '`col`'],
+            'dotted' => ['t.col', '`t`.`col`'],
+            'schema dotted' => ['db.t.col', '`db`.`t`.`col`'],
+            'backtick escaped' => ['a`b', '`a``b`'],
+            'injection attempt' => ['x` = 1 OR `1', '`x`` = 1 OR ``1`'],
+        ];
+    }
+
+    /**
+     * @dataProvider mysqlIdentifierProvider
+     */
+    public function testQuoteMysqlIdentifier(string $field, string $expected)
+    {
+        $this->assertSame($expected, Translator::quoteMysqlIdentifier($field));
+    }
 }

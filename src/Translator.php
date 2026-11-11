@@ -45,17 +45,24 @@ class Translator
     /** @var string $paramPrefix prefix added to parameters, to be changed in case of multiple translator params being merged */
     private string $paramPrefix = "p";
 
+    /** @var (\Closure(string): string)|null quotes field names before they go into the SQL */
+    private ?\Closure $fieldQuoter = null;
 
     /**
      * Constructors.
      * @param array<string, mixed> $data Rules configuration
      * @param ?string $paramPrefix prefix added to parameters, to be changed in case of multiple translator params being merged
+     * @param ?callable(string): string $fieldQuoter quotes each field name (which may be dotted, e.g. `t.col`)
+     *   before it is put into the SQL, e.g. `Translator::quoteMysqlIdentifier(...)`; null keeps fields as given
      */
-    public function __construct(private readonly array|Rule $data, ?string $paramPrefix = null)
+    public function __construct(private readonly array|Rule $data, ?string $paramPrefix = null, ?callable $fieldQuoter = null)
     {
         $this->initOperators();
         if(!is_null($paramPrefix)){
             $this->paramPrefix = $paramPrefix;
+        }
+        if(!is_null($fieldQuoter)){
+            $this->fieldQuoter = $fieldQuoter(...);
         }
 
         if(is_array($this->data)) {
@@ -78,6 +85,9 @@ class Translator
      */
     protected function encodeRule(string $field, string $type, array $params): string
     {
+        if (!is_null($this->fieldQuoter)) {
+            $field = ($this->fieldQuoter)($field);
+        }
         $pattern = $this->_operators[$type];
         $keys = array_keys($params);
 
@@ -182,6 +192,21 @@ class Translator
     }
 
 
+
+    /**
+     * Quotes a possibly dotted identifier for MySQL/MariaDB: each dot segment is wrapped in
+     * backticks and backticks inside it are doubled, e.g. `t.col` becomes `` `t`.`col` ``.
+     * Usable as the `$fieldQuoter` constructor argument: `Translator::quoteMysqlIdentifier(...)`.
+     * @param string $field field name, optionally prefixed with table/alias names separated by dots
+     * @return string quoted identifier
+     */
+    public static function quoteMysqlIdentifier(string $field): string
+    {
+        return implode('.', array_map(
+            static fn(string $segment): string => '`' . str_replace('`', '``', $segment) . '`',
+            explode('.', $field)
+        ));
+    }
 
     private function initOperators() : void
     {
